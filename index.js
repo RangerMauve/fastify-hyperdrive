@@ -10,7 +10,7 @@ function createServeHyperdrive (getHyperdrive) {
     const { key, '*': path } = params
 
     if (path === '.well-known/dat') {
-      return key
+      return `dat://${key}\nttl=3600`
     }
 
     const drive = await getHyperdrive(key)
