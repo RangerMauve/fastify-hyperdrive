@@ -1,0 +1,38 @@
+{
+  "name": "fastify-hyperdrive",
+  "version": "1.0.0",
+  "description": "Serve files from Hyperdrive as a fastify route",
+  "main": "index.js",
+  "dependencies": {
+    "mime": "^2.4.6",
+    "range-parser": "^1.2.1",
+    "resolve-dat-path": "^1.2.0"
+  },
+  "devDependencies": {
+    "cross-fetch": "^3.0.5",
+    "dat-sdk": "^2.6.1",
+    "fastify": "^3.1.1",
+    "tape": "^5.0.1"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RangerMauve/fastify-hyperdrive.git"
+  },
+  "keywords": [
+    "fastify",
+    "hyperdrive",
+    "hypercore",
+    "http",
+    "serve",
+    "gateway"
+  ],
+  "author": "rangermauve <ranger@mauve.moe> (https://mauve.moe/)",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/RangerMauve/fastify-hyperdrive/issues"
+  },
+  "homepage": "https://github.com/RangerMauve/fastify-hyperdrive#readme"
+}
