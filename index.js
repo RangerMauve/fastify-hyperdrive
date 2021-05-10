@@ -14,6 +14,10 @@ function createServeHyperdrive (getHyperdrive) {
     }
 
     const drive = await getHyperdrive(key)
+    if (!drive) {
+      reply.status(404)
+      return 'Unknown drive'
+    }
 
     try {
       const { type, path: finalPath, stat } = await resolvePath(drive, path)
