@@ -21,6 +21,7 @@ function createServeHyperdrive (getHyperdrive) {
       if (type === 'directory') {
         const files = await drive.readdir(finalPath)
 
+        reply.header('Hyperdrive-Version', drive.version)
         reply.header('Content-Type', 'text/html')
 
         if (method !== 'GET') return ''
@@ -35,6 +36,7 @@ function createServeHyperdrive (getHyperdrive) {
           `).join('')}</ul>
         `
       } else if (type === 'file') {
+        reply.header('Hyperdrive-Version', drive.version)
         reply.header('Content-Type', mime.getType(finalPath) || 'text/plain')
         reply.header('Accept-Ranges', 'bytes')
 
@@ -68,6 +70,7 @@ function createServeHyperdrive (getHyperdrive) {
         throw new Error(`Could not resolve path: ${key} ${path} :${type}`)
       }
     } catch (e) {
+      reply.header('Hyperdrive-Version', drive.version)
       reply.status(404)
 
       return e.message

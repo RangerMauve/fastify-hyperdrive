@@ -18,6 +18,7 @@ test('Load data from drive through server', async (t) => {
 
     t.pass('Got response')
     t.equals(response.status, 200)
+    t.equals(response.headers.get('hyperdrive-version'), '2')
     t.equals(response.headers.get('content-type'), 'text/plain')
     t.equals(response.headers.get('content-length'), '7')
     t.equals(response.headers.get('accept-ranges'), 'bytes')
@@ -43,6 +44,7 @@ test('404 error for unknown files', async (t) => {
 
     t.pass('Got response')
     t.equals(response.status, 404)
+    t.equals(response.headers.get('hyperdrive-version'), '2')
     t.equals(response.headers.get('content-type'), 'text/plain; charset=utf-8')
     t.equals(response.headers.get('content-length'), '9')
 
@@ -68,6 +70,7 @@ test('directory lookup', async (t) => {
 
     t.pass('Got response')
     t.equals(response.status, 200)
+    t.equals(response.headers.get('hyperdrive-version'), '3')
     t.equals(response.headers.get('content-type'), 'text/html')
     t.equals(response.headers.get('content-length'), '433')
 
