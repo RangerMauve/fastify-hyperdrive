@@ -14,8 +14,8 @@ test('Load data from drive through server', async (t) => {
     const { Hyperdrive, resolveName } = sdk
 
     async function getHyperdrive (key) {
-      const resolved = resolveName(key)
-      return Hyperdrive(key)
+      const resolved = await resolveName(key)
+      return Hyperdrive(resolved)
     }
 
     server = fastify({ logger: false })
@@ -47,7 +47,7 @@ test('Load data from drive through server', async (t) => {
   } catch (e) {
     t.error(e.stack)
   } finally {
-    if(sdk) sdk.close()
-    if(server) server.close()
+    if (sdk) sdk.close()
+    if (server) server.close()
   }
 })
