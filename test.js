@@ -90,11 +90,31 @@ test('directory lookup', async (t) => {
   }
 })
 
-async function setup () {
+test('getHyperDrive doesnt return anything results in 404', async (t) => {
+  const { close, address } = await setup({ denyAll: true })
+  try {
+    const toFetch = new URL('/d95ad1cdc074ffc406cabfb42f4ac45f1d57fa3a23d4112a6366ea6eb7a4d531/example.txt', address)
+
+    const response = await fetch(toFetch.href)
+
+    t.pass('Got response')
+    t.equal(response.status, 404)
+
+    const text = await response.text()
+    t.equal(text, 'Unknown drive', 'Drive unknown')
+  } finally {
+    close()
+  }
+})
+
+async function setup ({ denyAll } = {}) {
   const sdk = await SDK({ persist: false })
   const { Hyperdrive, resolveName } = sdk
 
   async function getHyperdrive (key) {
+    if (denyAll) {
+      return null
+    }
     const resolved = await resolveName(key)
     return Hyperdrive(resolved)
   }
