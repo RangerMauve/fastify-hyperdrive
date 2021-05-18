@@ -1,4 +1,4 @@
-const resolvePathCB = require('resolve-dat-path')
+const resolvePath = require('resolve-dat-path')
 const mime = require('mime/lite')
 const parseRange = require('range-parser')
 
@@ -81,13 +81,4 @@ function createServeHyperdrive (getHyperdrive) {
       return e.message
     }
   }
-}
-
-async function resolvePath (drive, path) {
-  return new Promise((resolve, reject) => {
-    resolvePathCB(drive, path, (err, resolved) => {
-      if (err) reject(err)
-      else resolve(resolved)
-    })
-  })
 }
