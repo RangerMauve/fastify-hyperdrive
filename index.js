@@ -23,7 +23,8 @@ function createServeHyperdrive (getHyperdrive) {
       const { type, path: finalPath, stat } = await resolvePath(drive, path)
 
       if (type === 'directory') {
-        const files = await drive.readdir(finalPath)
+        const stats = await drive.readdir(finalPath, { includeStats: true })
+        const files = stats.map(({ stat, name }) => (stat.isDirectory() ? `${name}/` : name))
 
         reply.header('Hyperdrive-Version', drive.version)
         reply.header('Content-Type', 'text/html')
