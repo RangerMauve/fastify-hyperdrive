@@ -1,6 +1,6 @@
 {
   "name": "fastify-hyperdrive",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Serve files from Hyperdrive as a fastify route",
   "main": "index.js",
   "dependencies": {
