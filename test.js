@@ -1,5 +1,5 @@
 const fastify = require('fastify')
-const SDK = require('dat-sdk')
+const SDK = require('hyper-sdk')
 const fetch = require('cross-fetch')
 const test = require('tape')
 
@@ -18,10 +18,10 @@ test('Load data from drive through server', async (t) => {
 
     t.pass('Got response')
     t.equals(response.status, 200)
-    t.equals(response.headers.get('hyperdrive-version'), '2')
-    t.equals(response.headers.get('content-type'), 'text/plain')
-    t.equals(response.headers.get('content-length'), '7')
-    t.equals(response.headers.get('accept-ranges'), 'bytes')
+    t.equals(response.headers.get('etag'), '"2"', 'Got expected version')
+    t.equals(response.headers.get('content-type'), 'text/plain; charset=utf-8', 'Got expected content type')
+    t.equals(response.headers.get('content-length'), '7', 'Got expected content length')
+    t.equals(response.headers.get('accept-ranges'), 'bytes', 'Got expected accept-ranges header')
 
     const text = await response.text()
 
@@ -43,14 +43,13 @@ test('404 error for unknown files', async (t) => {
     const response = await fetch(toFetch.href)
 
     t.pass('Got response')
-    t.equals(response.status, 404)
-    t.equals(response.headers.get('hyperdrive-version'), '2')
+    t.equals(response.status, 404, 'Got expected status')
+    t.equals(response.headers.get('etag'), '"2"', 'Got expected version')
     t.equals(response.headers.get('content-type'), 'text/plain; charset=utf-8')
-    t.equals(response.headers.get('content-length'), '9')
 
     const text = await response.text()
 
-    t.equal(text, 'Not Found', 'Got file contents')
+    t.ok(text.startsWith('Error: Not Found'), 'Got file contents')
   } finally {
     close()
   }
@@ -69,25 +68,25 @@ test('directory lookup', async (t) => {
     const response = await fetch(toFetch.href)
 
     t.pass('Got response')
-    t.equals(response.status, 200)
-    t.equals(response.headers.get('hyperdrive-version'), '3')
-    t.equals(response.headers.get('content-type'), 'text/html')
-    t.equals(response.headers.get('content-length'), '433')
+    t.equals(response.status, 200, 'Got expected response code')
+    t.equals(response.headers.get('etag'), '"3"')
+    t.equals(response.headers.get('content-type'), 'text/html; charset=utf-8')
 
     const text = await response.text()
 
     t.equal(text, `
-          <!DOCTYPE html>
-          <title>${drive.key.toString('hex')}/example</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <h1>Index of example</h1>
-          <ul>
-            <li><a href="../">../</a></li>
-            <li><a href="b.txt">./b.txt</a></li>
-          
-            <li><a href="a.txt">./a.txt</a></li>
-          </ul>
-        `, 'Got file contents')
+        <!DOCTYPE html>
+        <title>hyper://${drive.key.toString('hex')}/example</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <h1>Index of example</h1>
+        <ul>
+          <li><a href="../">../</a></li>
+          <li><a href="b.txt">./b.txt</a></li>
+        
+          <li><a href="a.txt">./a.txt</a></li>
+        
+        </ul>
+      `, 'Got file contents')
   } finally {
     close()
   }
@@ -112,18 +111,18 @@ test('getHyperDrive doesnt return anything results in 404', async (t) => {
 
 async function setup ({ denyAll } = {}) {
   const sdk = await SDK({ persist: false })
-  const { Hyperdrive, resolveName } = sdk
+  const { Hyperdrive } = sdk
 
   async function getHyperdrive (key) {
     if (denyAll) {
       return null
     }
-    const resolved = await resolveName(key)
-    return Hyperdrive(resolved)
+    return Hyperdrive(key)
   }
 
   const server = fastify({ logger: false })
-  server.get('/:key/*path', fastifyHyperdrive(getHyperdrive))
+  server.all('/:key/*path', fastifyHyperdrive(getHyperdrive))
+
   try {
     return {
       sdk,
