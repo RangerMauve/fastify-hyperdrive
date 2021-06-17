@@ -4,7 +4,7 @@
   "description": "Serve files from Hyperdrive as a fastify route",
   "main": "index.js",
   "dependencies": {
-    "hypercore-fetch": "^7.0.3"
+    "hypercore-fetch": "^8.0.0-0"
   },
   "devDependencies": {
     "cross-fetch": "^3.0.5",
